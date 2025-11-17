@@ -1,0 +1,45 @@
+# Python bytecode
+*.pyc
+__pycache__/
+
+# Flutter / Dart build & ephemeral files
+build/
+.flutter-plugins
+.flutter-plugins-dependencies
+.packages
+.pub-cache/
+*.lock
+ios/Flutter/ephemeral/
+*.iml
+
+# Android Gradle build files
+*.gradle
+.gradle/
+local.properties
+
+# IDE / cache files
+.idea/
+*.vscode/
+*.swp
+*.DS_Store
+
+.venv
+.env
+apartments_for_rent_classified_10K.csv
+json_testing
+*.csv
+
+# Exclude Android Gradle caches and local platform configs
+**/android/.gradle/
+**/android/local.properties
+
+# Exclude platform ephemeral Flutter files
+**/ios/Flutter/ephemeral/
+**/macos/Flutter/ephemeral/
+**/windows/flutter/ephemeral/
+**/linux/flutter/ephemeral/
+
+# Exclude generated Xcode config and other generated platform files
+**/ios/Flutter/Generated.xcconfig
+
+# Keep model artifacts (.pkl) tracked; ignore compiled Python files (already present above)
