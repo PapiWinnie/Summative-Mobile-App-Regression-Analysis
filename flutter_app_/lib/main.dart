@@ -8,7 +8,7 @@ void main() {
 
 /// Root widget of the application
 class StudentHousingRentPredictionApp extends StatelessWidget {
-  const StudentHousingRentPredictionApp({Key? key}) : super(key: key);
+  const StudentHousingRentPredictionApp({super.key});
 
   @override
   Widget build(BuildContext context) {
