@@ -112,9 +112,4 @@ flutter run
 * Explains why Random Forest was selected based on dataset characteristics and model performance.
 
 
-## Notes
-
-* All numeric inputs are constrained using Pydantic for realistic bounds.
-* API implements CORS middleware to allow requests from the Flutter frontend.
-* Dataset is non-generic and tailored for Rwanda apartment rentals, fulfilling the assignment rubric criteria.
 
