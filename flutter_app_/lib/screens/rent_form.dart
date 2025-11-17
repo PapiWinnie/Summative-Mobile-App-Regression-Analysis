@@ -3,29 +3,28 @@ import '../models/rent_input.dart';
 import '../services/api_service.dart';
 import '../widgets/form_field_widget.dart';
 
-/// Main screen for rent prediction form
 class RentFormScreen extends StatefulWidget {
-  const RentFormScreen({Key? key}) : super(key: key);
+  const RentFormScreen({super.key});
 
   @override
   State<RentFormScreen> createState() => _RentFormScreenState();
 }
 
 class _RentFormScreenState extends State<RentFormScreen> {
-  // Controllers for text input fields
+  // Controllers for numeric input fields
   final TextEditingController _bathroomsController = TextEditingController();
   final TextEditingController _bedroomsController = TextEditingController();
   final TextEditingController _squareFeetController = TextEditingController();
   final TextEditingController _latitudeController = TextEditingController();
   final TextEditingController _longitudeController = TextEditingController();
 
-  // Dropdown field values
+  // Dropdown selections
   String? _category;
-  String? _priceType;
-  String? _hasPhoto;
-  String? _petsAllowed;
+  String? _condition;
+  String? _isFurnished;
+  String? _parkingSpace;
 
-  // Validation error messages
+  // Error messages
   String? _bathroomsError;
   String? _bedroomsError;
   String? _squareFeetError;
@@ -37,18 +36,16 @@ class _RentFormScreenState extends State<RentFormScreen> {
   double? _predictedRent;
   String? _errorMessage;
 
-  // API service instance
   final ApiService _apiService = ApiService();
 
   // Dropdown options
   final List<String> _categoryOptions = ['home', 'short_term'];
-  final List<String> _priceTypeOptions = ['Monthly|Weekly', 'Weekly'];
-  final List<String> _hasPhotoOptions = ['Thumbnail', 'Yes'];
-  final List<String> _petsAllowedOptions = ['Cats,Dogs', 'Dogs', 'Unknown'];
+  final List<String> _conditionOptions = ['new', 'used'];
+  final List<String> _isFurnishedOptions = ['Yes', 'No'];
+  final List<String> _parkingSpaceOptions = ['Yes', 'No'];
 
   @override
   void dispose() {
-    // Clean up controllers when widget is disposed
     _bathroomsController.dispose();
     _bedroomsController.dispose();
     _squareFeetController.dispose();
@@ -57,22 +54,15 @@ class _RentFormScreenState extends State<RentFormScreen> {
     super.dispose();
   }
 
-  /// Validate numeric field with min/max range
+  // Validate numeric fields
   String? _validateNumericField(String value, double min, double max, String fieldName) {
-    if (value.isEmpty) {
-      return '$fieldName is required';
-    }
+    if (value.isEmpty) return '$fieldName is required';
     final double? numValue = double.tryParse(value);
-    if (numValue == null) {
-      return 'Please enter a valid number';
-    }
-    if (numValue < min || numValue > max) {
-      return 'Value must be between $min and $max';
-    }
+    if (numValue == null) return 'Enter a valid number';
+    if (numValue < min || numValue > max) return 'Value must be between $min and $max';
     return null;
   }
 
-  /// Check if all form fields are valid
   bool _isFormValid() {
     return _bathroomsError == null &&
         _bedroomsError == null &&
@@ -85,12 +75,11 @@ class _RentFormScreenState extends State<RentFormScreen> {
         _latitudeController.text.isNotEmpty &&
         _longitudeController.text.isNotEmpty &&
         _category != null &&
-        _priceType != null &&
-        _hasPhoto != null &&
-        _petsAllowed != null;
+        _condition != null &&
+        _isFurnished != null &&
+        _parkingSpace != null;
   }
 
-  /// Handle form submission
   Future<void> _submitForm() async {
     setState(() {
       _isLoading = true;
@@ -99,7 +88,6 @@ class _RentFormScreenState extends State<RentFormScreen> {
     });
 
     try {
-      // Create RentInput object from form data
       final rentInput = RentInput(
         bathrooms: double.parse(_bathroomsController.text),
         bedrooms: double.parse(_bedroomsController.text),
@@ -107,12 +95,11 @@ class _RentFormScreenState extends State<RentFormScreen> {
         latitude: double.parse(_latitudeController.text),
         longitude: double.parse(_longitudeController.text),
         category: _category!,
-        priceType: _priceType!,
-        hasPhoto: _hasPhoto!,
-        petsAllowed: _petsAllowed!,
+        condition: _condition!,
+        isFurnished: _isFurnished!,
+        parkingSpace: _parkingSpace!,
       );
 
-      // Call API service to get prediction
       final response = await _apiService.predictRent(rentInput);
 
       setState(() {
@@ -126,7 +113,7 @@ class _RentFormScreenState extends State<RentFormScreen> {
     } catch (e) {
       setState(() {
         _isLoading = false;
-        _errorMessage = 'An unexpected error occurred: $e';
+        _errorMessage = 'Unexpected error: $e';
       });
     }
   }
@@ -137,229 +124,164 @@ class _RentFormScreenState extends State<RentFormScreen> {
       appBar: AppBar(
         title: const Text('Student Housing Rent Prediction'),
         backgroundColor: Colors.blue[700],
-        elevation: 0,
       ),
-      body: Container(
-        decoration: BoxDecoration(
-          gradient: LinearGradient(
-            begin: Alignment.topCenter,
-            end: Alignment.bottomCenter,
-            colors: [Colors.blue[700]!, Colors.blue[50]!],
-            stops: const [0.0, 0.3],
-          ),
-        ),
-        child: SafeArea(
-          child: SingleChildScrollView(
-            padding: const EdgeInsets.all(16.0),
-            child: Column(
-              crossAxisAlignment: CrossAxisAlignment.stretch,
-              children: [
-                // Form card
-                Card(
-                  elevation: 4,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(12),
-                  ),
-                  child: Padding(
-                    padding: const EdgeInsets.all(16.0),
-                    child: Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        const Text(
-                          'Property Details',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
+      body: SafeArea(
+        child: SingleChildScrollView(
+          padding: const EdgeInsets.all(16.0),
+          child: Column(
+            children: [
+              // Form card
+              Card(
+                elevation: 4,
+                shape: RoundedRectangleBorder(
+                  borderRadius: BorderRadius.circular(12),
+                ),
+                child: Padding(
+                  padding: const EdgeInsets.all(16.0),
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.stretch,
+                    children: [
+                      const Text(
+                        'Property Details',
+                        style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold),
+                      ),
+                      const SizedBox(height: 16),
+
+                      NumericFormField(
+                        label: 'Bathrooms',
+                        hint: 'Enter number of bathrooms (1-20)',
+                        controller: _bathroomsController,
+                        minValue: 1,
+                        maxValue: 20,
+                        errorText: _bathroomsError,
+                        onChanged: (value) {
+                          setState(() {
+                            _bathroomsError = _validateNumericField(value, 1, 20, 'Bathrooms');
+                          });
+                        },
+                      ),
+                      NumericFormField(
+                        label: 'Bedrooms',
+                        hint: 'Enter number of bedrooms (1-20)',
+                        controller: _bedroomsController,
+                        minValue: 1,
+                        maxValue: 20,
+                        errorText: _bedroomsError,
+                        onChanged: (value) {
+                          setState(() {
+                            _bedroomsError = _validateNumericField(value, 1, 20, 'Bedrooms');
+                          });
+                        },
+                      ),
+                      NumericFormField(
+                        label: 'Square Feet',
+                        hint: 'Enter area in sq ft (50-10000)',
+                        controller: _squareFeetController,
+                        minValue: 50,
+                        maxValue: 10000,
+                        errorText: _squareFeetError,
+                        onChanged: (value) {
+                          setState(() {
+                            _squareFeetError = _validateNumericField(value, 50, 10000, 'Square feet');
+                          });
+                        },
+                      ),
+                      NumericFormField(
+                        label: 'Latitude',
+                        hint: 'Enter latitude (-90 to 90)',
+                        controller: _latitudeController,
+                        minValue: -90,
+                        maxValue: 90,
+                        errorText: _latitudeError,
+                        onChanged: (value) {
+                          setState(() {
+                            _latitudeError = _validateNumericField(value, -90, 90, 'Latitude');
+                          });
+                        },
+                      ),
+                      NumericFormField(
+                        label: 'Longitude',
+                        hint: 'Enter longitude (-180 to 180)',
+                        controller: _longitudeController,
+                        minValue: -180,
+                        maxValue: 180,
+                        errorText: _longitudeError,
+                        onChanged: (value) {
+                          setState(() {
+                            _longitudeError = _validateNumericField(value, -180, 180, 'Longitude');
+                          });
+                        },
+                      ),
+
+                      const SizedBox(height: 16),
+                      const Divider(),
+                      const SizedBox(height: 16),
+
+                      const Text('Additional Information', style: TextStyle(fontSize: 20, fontWeight: FontWeight.bold)),
+                      const SizedBox(height: 16),
+
+                      DropdownFormField(
+                        label: 'Category',
+                        value: _category,
+                        items: _categoryOptions,
+                        onChanged: (value) => setState(() => _category = value),
+                      ),
+                      DropdownFormField(
+                        label: 'Condition',
+                        value: _condition,
+                        items: _conditionOptions,
+                        onChanged: (value) => setState(() => _condition = value),
+                      ),
+                      DropdownFormField(
+                        label: 'Is Furnished',
+                        value: _isFurnished,
+                        items: _isFurnishedOptions,
+                        onChanged: (value) => setState(() => _isFurnished = value),
+                      ),
+                      DropdownFormField(
+                        label: 'Parking Space',
+                        value: _parkingSpace,
+                        items: _parkingSpaceOptions,
+                        onChanged: (value) => setState(() => _parkingSpace = value),
+                      ),
+
+                      const SizedBox(height: 24),
+
+                      ElevatedButton(
+                        onPressed: _isFormValid() && !_isLoading ? _submitForm : null,
+                        style: ElevatedButton.styleFrom(
+                          padding: const EdgeInsets.symmetric(vertical: 16),
+                          backgroundColor: Colors.blue[700],
+                          disabledBackgroundColor: Colors.grey[300],
+                          shape: RoundedRectangleBorder(borderRadius: BorderRadius.circular(8)),
                         ),
-                        const SizedBox(height: 16),
-
-                        // Bathrooms field
-                        NumericFormField(
-                          label: 'Bathrooms',
-                          hint: 'Enter number of bathrooms (0-20)',
-                          controller: _bathroomsController,
-                          minValue: 0,
-                          maxValue: 20,
-                          errorText: _bathroomsError,
-                          onChanged: (value) {
-                            setState(() {
-                              _bathroomsError = _validateNumericField(value, 0, 20, 'Bathrooms');
-                            });
-                          },
-                        ),
-
-                        // Bedrooms field
-                        NumericFormField(
-                          label: 'Bedrooms',
-                          hint: 'Enter number of bedrooms (0-20)',
-                          controller: _bedroomsController,
-                          minValue: 0,
-                          maxValue: 20,
-                          errorText: _bedroomsError,
-                          onChanged: (value) {
-                            setState(() {
-                              _bedroomsError = _validateNumericField(value, 0, 20, 'Bedrooms');
-                            });
-                          },
-                        ),
-
-                        // Square feet field
-                        NumericFormField(
-                          label: 'Square Feet',
-                          hint: 'Enter area in sq ft (100-10000)',
-                          controller: _squareFeetController,
-                          minValue: 100,
-                          maxValue: 10000,
-                          errorText: _squareFeetError,
-                          onChanged: (value) {
-                            setState(() {
-                              _squareFeetError = _validateNumericField(value, 100, 10000, 'Square feet');
-                            });
-                          },
-                        ),
-
-                        // Latitude field
-                        NumericFormField(
-                          label: 'Latitude',
-                          hint: 'Enter latitude coordinate',
-                          controller: _latitudeController,
-                          minValue: -90,
-                          maxValue: 90,
-                          errorText: _latitudeError,
-                          onChanged: (value) {
-                            setState(() {
-                              _latitudeError = _validateNumericField(value, -90, 90, 'Latitude');
-                            });
-                          },
-                        ),
-
-                        // Longitude field
-                        NumericFormField(
-                          label: 'Longitude',
-                          hint: 'Enter longitude coordinate',
-                          controller: _longitudeController,
-                          minValue: -180,
-                          maxValue: 180,
-                          errorText: _longitudeError,
-                          onChanged: (value) {
-                            setState(() {
-                              _longitudeError = _validateNumericField(value, -180, 180, 'Longitude');
-                            });
-                          },
-                        ),
-
-                        const SizedBox(height: 8),
-                        const Divider(),
-                        const SizedBox(height: 8),
-
-                        const Text(
-                          'Additional Information',
-                          style: TextStyle(
-                            fontSize: 20,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                        const SizedBox(height: 16),
-
-                        // Category dropdown
-                        DropdownFormField(
-                          label: 'Category',
-                          value: _category,
-                          items: _categoryOptions,
-                          onChanged: (value) {
-                            setState(() {
-                              _category = value;
-                            });
-                          },
-                        ),
-
-                        // Price type dropdown
-                        DropdownFormField(
-                          label: 'Price Type',
-                          value: _priceType,
-                          items: _priceTypeOptions,
-                          onChanged: (value) {
-                            setState(() {
-                              _priceType = value;
-                            });
-                          },
-                        ),
-
-                        // Has photo dropdown
-                        DropdownFormField(
-                          label: 'Has Photo',
-                          value: _hasPhoto,
-                          items: _hasPhotoOptions,
-                          onChanged: (value) {
-                            setState(() {
-                              _hasPhoto = value;
-                            });
-                          },
-                        ),
-
-                        // Pets allowed dropdown
-                        DropdownFormField(
-                          label: 'Pets Allowed',
-                          value: _petsAllowed,
-                          items: _petsAllowedOptions,
-                          onChanged: (value) {
-                            setState(() {
-                              _petsAllowed = value;
-                            });
-                          },
-                        ),
-
-                        const SizedBox(height: 24),
-
-                        // Submit button
-                        ElevatedButton(
-                          onPressed: _isFormValid() && !_isLoading ? _submitForm : null,
-                          style: ElevatedButton.styleFrom(
-                            padding: const EdgeInsets.symmetric(vertical: 16),
-                            backgroundColor: Colors.blue[700],
-                            disabledBackgroundColor: Colors.grey[300],
-                            shape: RoundedRectangleBorder(
-                              borderRadius: BorderRadius.circular(8),
-                            ),
-                          ),
-                          child: _isLoading
-                              ? const SizedBox(
-                                  height: 20,
-                                  width: 20,
-                                  child: CircularProgressIndicator(
-                                    strokeWidth: 2,
-                                    valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
-                                  ),
-                                )
-                              : const Text(
-                                  'Predict Rent',
-                                  style: TextStyle(
-                                    fontSize: 18,
-                                    fontWeight: FontWeight.bold,
-                                    color: Colors.white,
-                                  ),
+                        child: _isLoading
+                            ? const SizedBox(
+                                height: 20,
+                                width: 20,
+                                child: CircularProgressIndicator(
+                                  strokeWidth: 2,
+                                  valueColor: AlwaysStoppedAnimation<Color>(Colors.white),
                                 ),
-                        ),
-                      ],
-                    ),
+                              )
+                            : const Text('Predict Rent', style: TextStyle(fontSize: 18, fontWeight: FontWeight.bold, color: Colors.white)),
+                      ),
+                    ],
                   ),
                 ),
+              ),
 
-                const SizedBox(height: 16),
+              const SizedBox(height: 16),
 
-                // Display prediction result
-                if (_predictedRent != null)
-                  PredictionResultCard(predictedRent: _predictedRent!),
+              if (_predictedRent != null)
+                PredictionResultCard(predictedRent: _predictedRent!),
 
-                // Display error message
-                if (_errorMessage != null)
-                  ErrorMessageCard(errorMessage: _errorMessage!),
-              ],
-            ),
+              if (_errorMessage != null)
+                ErrorMessageCard(errorMessage: _errorMessage!),
+            ],
           ),
         ),
       ),
     );
   }
-} 
+}
