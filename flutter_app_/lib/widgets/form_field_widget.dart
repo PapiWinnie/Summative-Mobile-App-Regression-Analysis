@@ -11,7 +11,7 @@ class NumericFormField extends StatelessWidget {
   final Function(String) onChanged;
 
   const NumericFormField({
-    Key? key,
+    super.key,
     required this.label,
     required this.hint,
     required this.controller,
@@ -19,7 +19,7 @@ class NumericFormField extends StatelessWidget {
     required this.maxValue,
     this.errorText,
     required this.onChanged,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -53,13 +53,13 @@ class DropdownFormField extends StatelessWidget {
   final String? errorText;
 
   const DropdownFormField({
-    Key? key,
+    super.key,
     required this.label,
     required this.value,
     required this.items,
     required this.onChanged,
     this.errorText,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -93,9 +93,9 @@ class PredictionResultCard extends StatelessWidget {
   final double predictedRent;
 
   const PredictionResultCard({
-    Key? key,
+    super.key,
     required this.predictedRent,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
@@ -144,9 +144,9 @@ class ErrorMessageCard extends StatelessWidget {
   final String errorMessage;
 
   const ErrorMessageCard({
-    Key? key,
+    super.key,
     required this.errorMessage,
-  }) : super(key: key);
+  });
 
   @override
   Widget build(BuildContext context) {
