@@ -6,9 +6,9 @@ class RentInput {
   final double latitude;
   final double longitude;
   final String category;
-  final String priceType;
-  final String hasPhoto;
-  final String petsAllowed;
+  final String condition;    // maps to backend 'condition'
+  final String isFurnished;  // maps to backend 'is_furnished'
+  final String parkingSpace; // maps to backend 'parking_space'
 
   RentInput({
     required this.bathrooms,
@@ -17,9 +17,9 @@ class RentInput {
     required this.latitude,
     required this.longitude,
     required this.category,
-    required this.priceType,
-    required this.hasPhoto,
-    required this.petsAllowed,
+    required this.condition,
+    required this.isFurnished,
+    required this.parkingSpace,
   });
 
   /// Convert the model to JSON format for API request
@@ -27,13 +27,13 @@ class RentInput {
     return {
       'bathrooms': bathrooms,
       'bedrooms': bedrooms,
-      'square_feet': squareFeet,
-      'latitude': latitude,
-      'longitude': longitude,
+      'floor_area': squareFeet,
+      'lat': latitude,
+      'lng': longitude,
       'category': category,
-      'price_type': priceType,
-      'has_photo': hasPhoto,
-      'pets_allowed': petsAllowed,
+      'condition': condition,
+      'is_furnished': isFurnished,
+      'parking_space': parkingSpace,
     };
   }
 }
@@ -48,11 +48,10 @@ class RentPredictionResponse {
     this.error,
   });
 
-  /// Parse the API response JSON
   factory RentPredictionResponse.fromJson(Map<String, dynamic> json) {
     return RentPredictionResponse(
       predictedRent: (json['predicted_rent'] ?? 0.0).toDouble(),
       error: json['error'],
     );
   }
-} 
+}
