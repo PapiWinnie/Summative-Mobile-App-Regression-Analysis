@@ -8,7 +8,7 @@ class ApiService {
   // For local testing: http://10.0.2.2:8000/predict (Android emulator)
   // For local testing: http://localhost:8000/predict (iOS simulator)
   // For deployed API: https://your-api-domain.com/predict
-  static const String baseUrl = 'http://127.0.0.1:8000/predict';
+  static const String baseUrl = 'https://summative-mobile-app-regression-analysis.onrender.com/predict';
  
   /// Send a POST request to predict rent based on input data
   /// Returns a RentPredictionResponse with the predicted rent or error message
