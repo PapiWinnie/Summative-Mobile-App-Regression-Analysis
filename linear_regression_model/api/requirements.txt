@@ -1,0 +1,13 @@
+# Notebook & data processing
+pandas
+numpy
+matplotlib
+seaborn
+scikit-learn
+joblib
+kagglehub
+
+# API
+fastapi
+uvicorn
+pydantic
